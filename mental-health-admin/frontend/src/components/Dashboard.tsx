@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { LineChart, Line, BarChart, Bar, AreaChart, Area, PieChart, Pie, Cell, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { TrendingUp, TrendingDown, Activity, Users, AlertTriangle, CheckCircle, Shield, Eye, FileText, Search, Download, Bell, ChevronRight, Target, Brain, Heart } from 'lucide-react';
+import { TrendingUp, TrendingDown, Activity, Users, AlertTriangle, CheckCircle, Shield, Eye, FileText, Search, Download, Bell, ChevronRight, Target, Brain, Heart, LogOut } from 'lucide-react';
+import LoginPage from './Login';
 
 interface Student {
   anon_id: string;
@@ -15,6 +16,7 @@ interface Student {
 }
 
 const GovtMentalHealthDashboard = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeView, setActiveView] = useState('dashboard');
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [showRevealModal, setShowRevealModal] = useState(false);
@@ -99,6 +101,19 @@ const GovtMentalHealthDashboard = () => {
     return styles[status] || styles.stable;
   };
 
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setActiveView('dashboard');
+    setSelectedStudent(null);
+    setShowRevealModal(false);
+    setShowContactModal(false);
+  };
+
+  // Check if user is authenticated
+  if (!isAuthenticated) {
+    return <LoginPage onLoginSuccess={() => setIsAuthenticated(true)} />;
+  }
+
   interface StatCardProps {
     title: string;
     value: string | number;
@@ -159,6 +174,13 @@ const GovtMentalHealthDashboard = () => {
                 <Shield className="w-4 h-4 text-blue-600" />
                 <span className="text-sm font-semibold text-gray-700">Admin • ActionRole</span>
               </div>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                Logout
+              </button>
             </div>
           </div>
         </div>
@@ -422,7 +444,10 @@ const GovtMentalHealthDashboard = () => {
                     </div>
                   ))}
                 </div>
-                <button className="w-full mt-4 px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 text-sm font-medium rounded-lg transition-colors">
+                <button 
+                  onClick={() => setActiveView('critical')}
+                  className="w-full mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+                >
                   View All Alerts
                 </button>
               </div>
